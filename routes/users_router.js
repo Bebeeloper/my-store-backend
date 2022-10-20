@@ -25,23 +25,31 @@ router.get('/', (req, res) => {
 // Validate user login 'simulation'
 router.get('/:userName/:password', (req, res) => {
   const usersToShow = [];
-  let logged = false;
+  // let logged = false;
 
   const { userName, password } = req.params;
   // res.send(users[0].userName);
 
-  for (let index = 0; index < users.length; index++) {
-    if (users[index].userName == userName && users[index].password == password) {
-      usersToShow.push(users[index]);
-      logged = true;
+  for (const user of users) {
+    if (user.userName == userName && user.password == password) {
+      usersToShow.push(user);
     }
   }
 
+  // for (let index = 0; index < users.length; index++) {
+  //   if (users[index].userName == userName && users[index].password == password) {
+  //     usersToShow.push(users[index]);
+  //     logged = true;
+  //   }
+  // }
+
   // console.log(logged);
-  if (logged) {
-    return res.json(usersToShow);
+  if (usersToShow.length > 0) {
+    res.status(200).json(usersToShow);
   }else{
-    return res.send('Passwor or userName wrong');
+    res.status(404).json({
+      message: 'Passwor or userName wrong...' + ' userName: ' + userName,
+    });
   }
 
 });

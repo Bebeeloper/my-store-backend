@@ -30,10 +30,7 @@ router.get('/:productId', (req, res) => {
 
   for (const product of products) {
     if (productId == product.id) {
-      // res.status(200).json(product)
       productById.push(product);
-    }else{
-      //
     }
   }
 
@@ -45,11 +42,6 @@ router.get('/:productId', (req, res) => {
       productId
     })
   }
-  // res.json({
-  //   productId,
-  //   name: "Carne",
-  //   price: 8500
-  // });
 });
 
 // Endpoint advanced - show category and product Ids 2 parameters in same endpoint
