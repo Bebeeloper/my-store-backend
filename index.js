@@ -1,10 +1,11 @@
-const { query } = require('express');
+// const { query } = require('express');
 const express = require('express');
-const faker = require('faker');
 const routerApi = require('./routes');
 
 const app = express();
-const port = 3000;
+const port = 3002;
+
+app.use(express.json());
 
 routerApi(app);
 

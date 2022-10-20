@@ -7,6 +7,14 @@ const users = [{
 },{
   userName: 'mmendez',
   password: '321'
+},
+{
+  userName: 'gpardo',
+  password: '0000'
+},
+{
+  userName: 'peter',
+  password: '123'
 }];
 
 // Show list of users
@@ -29,7 +37,7 @@ router.get('/:userName/:password', (req, res) => {
     }
   }
 
-  console.log(logged);
+  // console.log(logged);
   if (logged) {
     return res.json(usersToShow);
   }else{
