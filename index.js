@@ -5,7 +5,7 @@ const routerApi = require('./routes');
 const app = express();
 const port = 3002;
 
-app.use(express.json());
+app.use(express.json()); //middleware
 
 routerApi(app);
 

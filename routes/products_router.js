@@ -1,4 +1,5 @@
 const express = require('express');
+const ProductsServices = require('../services/products_services');
 const router = express.Router();
 
 const products = [{
@@ -12,33 +13,25 @@ const products = [{
   price: 12500
 }];
 
+const proService = new ProductsServices();
 // GET
 router.get('/', (req, res) => {
-  res.json(products);
+  res.json(proService.products);
 });
 
 // filter specific route should be before to dynamic endpoints like this
-router.get('/filter', (req, res) => {
-  res.send('Soy un specific route');
-});
+// router.get('/filter', (req, res) => {
+//   res.send('Soy un specific route');
+// });
 
 // Get product by id
 router.get('/:productId', (req, res) => {
   const { productId } = req.params;
-  let productById;
-
-  for (const product of products) {
-    if (productId == product.id) {
-      productById = product;
-    }
-  }
-
+  const productById = proService.getProductById(productId);
   if (productById) {
     res.status(200).json(productById);
   }else{
-    res.status(404).json({
-      message: 'Producto no encontrado... productId: ' + productId
-    })
+    res.status(404).json()
   }
 });
 
@@ -53,18 +46,13 @@ router.get('/:productId', (req, res) => {
 
 // POST
 router.post('/',  (req, res) => {
-
   const body = req.body;
   if (Object.keys(body).length != 0) {
-    products.push({
-      id: '00' + (products.length + 1).toString(),
-      name: body.name,
-      price: body.price
-    });
+    proService.postOneProduct(body);
     res.status(201).json({
       message: 'Product created',
-      data: body
-    })
+      data: proService.postOneProduct(body)
+    });
   }else{
     res.send('Debes poner un body en formato JSON');
   }
@@ -74,17 +62,9 @@ router.post('/',  (req, res) => {
 router.patch('/:productId',  (req, res) => {
   const { productId } = req.params;
   const body = req.body;
-  const product = products.find(product => product.id === productId);
 
-  if (!product) return res.status(404).json({ message: 'Product: ' + productId + ' not found' });
-
-  if (body.name) {
-    product.name = body.name;
-  }
-  if (body.price) {
-    product.price = body.price;
-  }
-  res.status(200).json(product);
+  if (proService.patchOneProduct(productId, body) == '') return res.status(404).json({ message: 'Product: ' + productId + ' not found' });
+  res.status(200).json(proService.patchOneProduct(productId, body));
 });
 
 // DELETE
