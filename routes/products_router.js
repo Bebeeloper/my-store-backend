@@ -2,17 +2,6 @@ const express = require('express');
 const ProductsServices = require('../services/products_services');
 const router = express.Router();
 
-const products = [{
-  id: '001',
-  name: "Carne de cerdo",
-  price: 8500
-},
-{
-  id: '002',
-  name: "Carne de res",
-  price: 12500
-}];
-
 const proService = new ProductsServices();
 // GET
 router.get('/', (req, res) => {
