@@ -25,21 +25,14 @@ class ProductsServices {
 
   getProductById(productId){
     const product = this.products.find(product => product.id === productId);
-    // let productById;
     if (product) {
-      // productById = product;
       return {
         message: 'Product founded',
         data: product
       }
     }else{
       return {message: 'Producto no encontrado... productId: ' + productId};
-      // productById = {
-      //   message: 'Producto no encontrado... productId: ' + productId
-      // }
     }
-
-    // return productById;
   }
 
   postOneProduct(body){

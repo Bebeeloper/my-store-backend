@@ -31,11 +31,6 @@ router.get('/:productId', (req, res) => {
 
   if (product.ErrorMessage) return res.status(404).json(product);
   res.status(200).json(product);
-  // if (productById) {
-  //   res.status(200).json(productById);
-  // }else{
-  //   res.status(404).json(productById);
-  // }
 });
 
 // Endpoint advanced - show category and product Ids 2 parameters in same endpoint
@@ -54,15 +49,6 @@ router.post('/',  (req, res) => {
 
   if (product.ErrorMessage) return res.status(404).json(product);
   res.status(200).json(product);
-  // if (Object.keys(body).length != 0) {
-  //   proService.postOneProduct(body);
-  //   res.status(201).json({
-  //     message: 'Product created',
-  //     data: proService.postOneProduct(body)
-  //   });
-  // }else{
-  //   res.json({ErrorMessage: 'Debes poner un body en formato JSON'});
-  // }
 });
 
 // PATCH
