@@ -74,12 +74,8 @@ router.post('/',  (req, res) => {
 router.patch('/:productId',  (req, res) => {
   const { productId } = req.params;
   const body = req.body;
-  // res.json({
-  //   message: 'Product updated',
-  //   data: body,
-  //   productId
-  // })
   const product = products.find(product => product.id === productId);
+
   if (!product) return res.status(404).json({ message: 'Product: ' + productId + ' not found' });
 
   if (body.name) {
@@ -94,10 +90,19 @@ router.patch('/:productId',  (req, res) => {
 // DELETE
 router.delete('/:productId',  (req, res) => {
   const { productId } = req.params;
-  res.json({
-    message: 'Product delected',
-    productId
-  })
+  const product = products.find(product => product.id === productId);
+
+  const productIndex = products.indexOf(product);
+
+  if (!product) res.status(404).json({ message: 'Product: ' + productId + ' not found' });
+
+  products.splice(productIndex, 1);
+
+  res.status(200).json({
+    message: 'Producto eliminado correctamente',
+    product
+  });
+
 });
 
 module.exports = router;
