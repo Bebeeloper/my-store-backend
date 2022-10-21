@@ -24,27 +24,17 @@ router.get('/', (req, res) => {
 
 // Validate user login 'simulation'
 router.get('/:userName/:password', (req, res) => {
-  const usersToShow = [];
-  // let logged = false;
 
+  let usersToShow = {};
   const { userName, password } = req.params;
-  // res.send(users[0].userName);
 
   for (const user of users) {
     if (user.userName == userName && user.password == password) {
-      usersToShow.push(user);
+      usersToShow = user;
     }
   }
 
-  // for (let index = 0; index < users.length; index++) {
-  //   if (users[index].userName == userName && users[index].password == password) {
-  //     usersToShow.push(users[index]);
-  //     logged = true;
-  //   }
-  // }
-
-  // console.log(logged);
-  if (usersToShow.length > 0) {
+  if (usersToShow) {
     res.status(200).json(usersToShow);
   }else{
     res.status(404).json({

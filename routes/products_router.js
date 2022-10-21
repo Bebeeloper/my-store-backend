@@ -13,7 +13,6 @@ const products = [{
 }];
 
 // GET
-// Endpoint with hardcode JSON a product object
 router.get('/', (req, res) => {
   res.json(products);
 });
@@ -26,20 +25,19 @@ router.get('/filter', (req, res) => {
 // Get product by id
 router.get('/:productId', (req, res) => {
   const { productId } = req.params;
-  const productById = [];
+  let productById;
 
   for (const product of products) {
     if (productId == product.id) {
-      productById.push(product);
+      productById = product;
     }
   }
 
-  if (productById.length > 0) {
+  if (productById) {
     res.status(200).json(productById);
   }else{
     res.status(404).json({
-      message: 'Producto no encontrado',
-      productId
+      message: 'Producto no encontrado... productId: ' + productId
     })
   }
 });
@@ -55,8 +53,14 @@ router.get('/:productId', (req, res) => {
 
 // POST
 router.post('/',  (req, res) => {
+
   const body = req.body;
   if (Object.keys(body).length != 0) {
+    products.push({
+      id: '00' + (products.length + 1).toString(),
+      name: body.name,
+      price: body.price
+    });
     res.status(201).json({
       message: 'Product created',
       data: body
@@ -70,11 +74,21 @@ router.post('/',  (req, res) => {
 router.patch('/:productId',  (req, res) => {
   const { productId } = req.params;
   const body = req.body;
-  res.json({
-    message: 'Product updated',
-    data: body,
-    productId
-  })
+  // res.json({
+  //   message: 'Product updated',
+  //   data: body,
+  //   productId
+  // })
+  const product = products.find(product => product.id === productId);
+  if (!product) return res.status(404).json({ message: 'Product: ' + productId + ' not found' });
+
+  if (body.name) {
+    product.name = body.name;
+  }
+  if (body.price) {
+    product.price = body.price;
+  }
+  res.status(200).json(product);
 });
 
 // DELETE

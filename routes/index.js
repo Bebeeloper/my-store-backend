@@ -2,8 +2,6 @@ const express = require('express');
 const productsRouter = require('./products_router');
 const usersRouter = require('./users_router');
 
-
-
 function routerApi(app) {
   const router = express.Router();
   app.use('/api/v1', router);
