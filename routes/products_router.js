@@ -27,12 +27,15 @@ router.get('/', (req, res) => {
 // Get product by id
 router.get('/:productId', (req, res) => {
   const { productId } = req.params;
-  const productById = proService.getProductById(productId);
-  if (productById) {
-    res.status(200).json(productById);
-  }else{
-    res.status(404).json()
-  }
+  const product = proService.getProductById(productId);
+
+  if (product.ErrorMessage) return res.status(404).json(product);
+  res.status(200).json(product);
+  // if (productById) {
+  //   res.status(200).json(productById);
+  // }else{
+  //   res.status(404).json(productById);
+  // }
 });
 
 // Endpoint advanced - show category and product Ids 2 parameters in same endpoint
@@ -47,42 +50,36 @@ router.get('/:productId', (req, res) => {
 // POST
 router.post('/',  (req, res) => {
   const body = req.body;
-  if (Object.keys(body).length != 0) {
-    proService.postOneProduct(body);
-    res.status(201).json({
-      message: 'Product created',
-      data: proService.postOneProduct(body)
-    });
-  }else{
-    res.send('Debes poner un body en formato JSON');
-  }
+  const product = proService.postOneProduct(body);
+
+  if (product.ErrorMessage) return res.status(404).json(product);
+  res.status(200).json(product);
+  // if (Object.keys(body).length != 0) {
+  //   proService.postOneProduct(body);
+  //   res.status(201).json({
+  //     message: 'Product created',
+  //     data: proService.postOneProduct(body)
+  //   });
+  // }else{
+  //   res.json({ErrorMessage: 'Debes poner un body en formato JSON'});
+  // }
 });
 
 // PATCH
 router.patch('/:productId',  (req, res) => {
   const { productId } = req.params;
   const body = req.body;
-
-  if (proService.patchOneProduct(productId, body) == '') return res.status(404).json({ message: 'Product: ' + productId + ' not found' });
-  res.status(200).json(proService.patchOneProduct(productId, body));
+  const product = proService.patchOneProduct(productId, body);
+  if (product.ErrorMessage) return res.status(404).json(product);
+  res.status(200).json(product);
 });
 
 // DELETE
 router.delete('/:productId',  (req, res) => {
   const { productId } = req.params;
-  const product = products.find(product => product.id === productId);
-
-  const productIndex = products.indexOf(product);
-
-  if (!product) res.status(404).json({ message: 'Product: ' + productId + ' not found' });
-
-  products.splice(productIndex, 1);
-
-  res.status(200).json({
-    message: 'Producto eliminado correctamente',
-    product
-  });
-
+  const product = proService.deleteProduct(productId);
+  if (product.ErrorMessage) return res.status(404).json(product);
+  res.status(200).json(product);
 });
 
 module.exports = router;
