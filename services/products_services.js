@@ -19,11 +19,11 @@ class ProductsServices {
     }
   }
 
-  getAllProducts(){
+  async getAllProducts(){
     return this.products;
   }
 
-  getProductById(productId){
+  async getProductById(productId){
     const product = this.products.find(product => product.id === productId);
     if (product) {
       return {
@@ -31,11 +31,11 @@ class ProductsServices {
         data: product
       }
     }else{
-      return {message: 'Producto no encontrado... productId: ' + productId};
+      throw new Error('Producto no encontrado... productId: ' + productId);
     }
   }
 
-  postOneProduct(body){
+  async postOneProduct(body){
     let product = {
       id: faker.datatype.uuid(),
       name: body.name,
@@ -50,11 +50,11 @@ class ProductsServices {
         data: product
       }
     }else{
-      return {ErrorMessage: 'Debes poner un body en formato JSON'};
+      throw new Error('Debes poner un body en formato JSON');
     }
   }
 
-  patchOneProduct(productId, body){
+  async patchOneProduct(productId, body){
     let index = this.products.findIndex(product => product.id === productId);
     if (index != -1) {
       const product = this.products[index];
@@ -70,36 +70,11 @@ class ProductsServices {
         }
       };
     }else{
-      return { ErrorMessage: 'Product: ' + productId + ' not found' };
+      throw new Error('Product: ' + productId + ' not found');
     }
-
-    // if (index != -1) {
-    //   const product = this.products[index];
-    //   this.products[index] = {
-    //     ...product, //merge data in JSON
-    //     ...body //merge data in JSON
-    //   };
-    //   return product;
-    // }else{
-    //   return { ErrorMessage: 'Product: ' + productId + ' not found' };
-    // }
-    // if (product) {
-    //   if (body.name) {
-    //     product.name = body.name;
-    //   }
-    //   if (body.price) {
-    //     product.price = body.price;
-    //   }
-    //   return {
-    //     message: 'Product updated successfully',
-    //     data: product
-    //   }
-    // }else{
-    //   return { ErrorMessage: 'Product: ' + productId + ' not found' };
-    // }
   }
 
-  deleteProduct(productId){
+  async deleteProduct(productId){
     let product = this.products.find(product => product.id === productId);
     const productIndex = this.products.indexOf(product);
     if (product) {

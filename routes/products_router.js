@@ -5,8 +5,9 @@ const router = express.Router();
 const proService = new ProductsServices();
 
 // GET
-router.get('/', (req, res) => {
-  res.json(proService.products);
+router.get('/', async (req, res) => {
+  const products = await proService.products;
+  res.json(products);
 });
 
 // filter specific route should be before to dynamic endpoints like this
@@ -15,12 +16,17 @@ router.get('/', (req, res) => {
 // });
 
 // Get product by id
-router.get('/:productId', (req, res) => {
-  const { productId } = req.params;
-  const product = proService.getProductById(productId);
+router.get('/:productId', async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const product = await proService.getProductById(productId);
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(404).json({
+      ErrorMessage: error.message
+    })
+  }
 
-  if (product.ErrorMessage) return res.status(404).json(product);
-  res.status(200).json(product);
 });
 
 // Endpoint advanced - show category and product Ids 2 parameters in same endpoint
@@ -33,30 +39,47 @@ router.get('/:productId', (req, res) => {
 // });
 
 // POST
-router.post('/',  (req, res) => {
-  const body = req.body;
-  const product = proService.postOneProduct(body);
+router.post('/',  async (req, res) => {
+  try {
+    const body = req.body;
+    const product = await proService.postOneProduct(body);
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(404).json({
+      ErrorMessage: error.message
+    });
+  }
 
-  if (product.ErrorMessage) return res.status(404).json(product);
-  res.status(200).json(product);
 });
 
 // PATCH
-router.patch('/:productId',  (req, res) => {
-  const { productId } = req.params;
-  const body = req.body;
-  const product = proService.patchOneProduct(productId, body);
+router.patch('/:productId', async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const body = req.body;
+    const product = await proService.patchOneProduct(productId, body);
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(404).json({
+      ErrorMessage: error.message
+    })
+  }
 
-  if (product.ErrorMessage) return res.status(404).json(product);
-  res.status(200).json(product);
 });
 
 // DELETE
-router.delete('/:productId',  (req, res) => {
-  const { productId } = req.params;
-  const product = proService.deleteProduct(productId);
-  if (product.ErrorMessage) return res.status(404).json(product);
-  res.status(200).json(product);
+router.delete('/:productId', async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const product = await proService.deleteProduct(productId);
+    // if (product.ErrorMessage) return res.status(404).json(product);
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(404).json({
+      ErrorMessage: error.message
+    })
+  }
+
 });
 
 module.exports = router;
