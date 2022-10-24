@@ -3,6 +3,7 @@ const ProductsServices = require('../services/products_services');
 const router = express.Router();
 
 const proService = new ProductsServices();
+
 // GET
 router.get('/', (req, res) => {
   res.json(proService.products);
@@ -45,6 +46,7 @@ router.patch('/:productId',  (req, res) => {
   const { productId } = req.params;
   const body = req.body;
   const product = proService.patchOneProduct(productId, body);
+
   if (product.ErrorMessage) return res.status(404).json(product);
   res.status(200).json(product);
 });

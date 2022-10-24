@@ -46,7 +46,7 @@ class ProductsServices {
 
       this.products.push(product);
       return {
-        message: 'Product created sucessfully',
+        message: 'Product created successfully',
         data: product
       }
     }else{
@@ -55,21 +55,48 @@ class ProductsServices {
   }
 
   patchOneProduct(productId, body){
-    let product = this.products.find(product => product.id === productId);
-    if (product) {
-      if (body.name) {
-        product.name = body.name;
-      }
-      if (body.price) {
-        product.price = body.price;
-      }
+    let index = this.products.findIndex(product => product.id === productId);
+    if (index != -1) {
+      const product = this.products[index];
+      this.products[index] = {
+        ...product, //merge data in JSON
+        ...body //merge data in JSON
+      };
       return {
-        message: 'Product updated sucessfully',
-        data: product
-      }
+        Message: 'Product updated successfully',
+        data: {
+          ...product,
+          ...body
+        }
+      };
     }else{
       return { ErrorMessage: 'Product: ' + productId + ' not found' };
     }
+
+    // if (index != -1) {
+    //   const product = this.products[index];
+    //   this.products[index] = {
+    //     ...product, //merge data in JSON
+    //     ...body //merge data in JSON
+    //   };
+    //   return product;
+    // }else{
+    //   return { ErrorMessage: 'Product: ' + productId + ' not found' };
+    // }
+    // if (product) {
+    //   if (body.name) {
+    //     product.name = body.name;
+    //   }
+    //   if (body.price) {
+    //     product.price = body.price;
+    //   }
+    //   return {
+    //     message: 'Product updated successfully',
+    //     data: product
+    //   }
+    // }else{
+    //   return { ErrorMessage: 'Product: ' + productId + ' not found' };
+    // }
   }
 
   deleteProduct(productId){
@@ -78,7 +105,7 @@ class ProductsServices {
     if (product) {
       this.products.splice(productIndex, 1);
       return {
-        message: 'Product delected sucessfully',
+        message: 'Product deleted successfully',
         product
       }
     }else{
