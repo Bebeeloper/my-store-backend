@@ -9,6 +9,14 @@ class ProductsServices {
     cost: 25000,
     price: 35000,
     image: faker.image.imageUrl()
+  },
+  {
+    refId: faker.datatype.uuid(),
+    ref: '0002',
+    name: 'Camiseta',
+    cost: 35000,
+    price: 50000,
+    image: faker.image.imageUrl()
   }]
   constructor(){
     // this.products = [];
