@@ -17,23 +17,56 @@ class ProductsServices {
     cost: 35000,
     price: 50000,
     image: faker.image.imageUrl()
-  }]
-  constructor(){
-    // this.products = [];
-    // this.generateProducts();
-  }
+  },{
+    refId: faker.datatype.uuid(),
+    ref: '0001',
+    name: 'Gorra',
+    cost: 25000,
+    price: 35000,
+    image: faker.image.imageUrl()
+  },
+  {
+    refId: faker.datatype.uuid(),
+    ref: '0002',
+    name: 'Camiseta',
+    cost: 35000,
+    price: 50000,
+    image: faker.image.imageUrl()
+  },{
+    refId: faker.datatype.uuid(),
+    ref: '0001',
+    name: 'Gorra',
+    cost: 25000,
+    price: 35000,
+    image: faker.image.imageUrl()
+  },
+  {
+    refId: faker.datatype.uuid(),
+    ref: '0002',
+    name: 'Camiseta',
+    cost: 35000,
+    price: 50000,
+    image: faker.image.imageUrl()
+  },{
+    refId: faker.datatype.uuid(),
+    ref: '0001',
+    name: 'Gorra',
+    cost: 25000,
+    price: 35000,
+    image: faker.image.imageUrl()
+  },
+  {
+    refId: faker.datatype.uuid(),
+    ref: '0002',
+    name: 'Camiseta',
+    cost: 35000,
+    price: 50000,
+    image: faker.image.imageUrl()
+  }];
 
-  // generateProducts(){
-  //   const limit = 100;
-  //   for (let index = 0; index < limit; index++) {
-  //     this.products.push({
-  //       id: faker.datatype.uuid(),
-  //       name: faker.commerce.product(),
-  //       price: parseInt(faker.commerce.price(), 10),
-  //       Image: faker.image.imageUrl()
-  //     })
-  //   }
-  // }
+  constructor(){
+
+  }
 
   getAllProducts(){
     return this.products;
@@ -66,10 +99,12 @@ class ProductsServices {
 
   postOneProduct(body){
     let product = {
-      id: faker.datatype.uuid(),
+      refId: faker.datatype.uuid(),
+      ref: body.ref,
       name: body.name,
+      cost: body.cost,
       price: body.price,
-      Image: body.Image
+      image: body.image
     }
     if (Object.keys(body).length != 0) {
 
