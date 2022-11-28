@@ -15,6 +15,15 @@ router.get('/', async (req, res) => {
 //   res.send('Soy un specific route');
 // });
 
+// Get product by name
+router.get('/name/:productName', (req, res) => {
+  const { productName } = req.params;
+  const product = proService.getProductByName(productName);
+
+  if (product.ErrorMessage) return res.status(404).json(product);
+  res.status(200).json(product);
+});
+
 // Get product by id
 router.get('/:productId', async (req, res) => {
   try {

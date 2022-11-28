@@ -2,28 +2,90 @@ const faker = require('faker');
 
 class ProductsServices {
 
-  constructor(){
-    this.products = [];
-    this.generateProducts();
-  }
+  products = [{
+    refId: faker.datatype.uuid(),
+    ref: 'm-3547',
+    name: 'Gorra',
+    cost: 25000,
+    price: 35000,
+    image: faker.image.imageUrl()
+  },
+  {
+    refId: faker.datatype.uuid(),
+    ref: 'p-6958',
+    name: 'Camiseta',
+    cost: 35000,
+    price: 50000,
+    image: faker.image.imageUrl()
+  },{
+    refId: faker.datatype.uuid(),
+    ref: 'p-1234',
+    name: 'Gorra',
+    cost: 25000,
+    price: 35000,
+    image: faker.image.imageUrl()
+  },
+  {
+    refId: faker.datatype.uuid(),
+    ref: 'k-1414',
+    name: 'Camiseta',
+    cost: 35000,
+    price: 50000,
+    image: faker.image.imageUrl()
+  },{
+    refId: faker.datatype.uuid(),
+    ref: 'j-2452',
+    name: 'Gorra',
+    cost: 25000,
+    price: 35000,
+    image: faker.image.imageUrl()
+  },
+  {
+    refId: faker.datatype.uuid(),
+    ref: 'h-2365',
+    name: 'Camiseta',
+    cost: 35000,
+    price: 50000,
+    image: faker.image.imageUrl()
+  },{
+    refId: faker.datatype.uuid(),
+    ref: 'l-0001',
+    name: 'Gorra',
+    cost: 25000,
+    price: 35000,
+    image: faker.image.imageUrl()
+  },
+  {
+    refId: faker.datatype.uuid(),
+    ref: 'h-0325',
+    name: 'Camiseta',
+    cost: 35000,
+    price: 50000,
+    image: faker.image.imageUrl()
+  }];
 
-  generateProducts(){
-    const limit = 100;
-    for (let index = 0; index < limit; index++) {
-      this.products.push({
-        id: faker.datatype.uuid(),
-        name: faker.commerce.product(),
-        price: parseInt(faker.commerce.price(), 10),
-        Image: faker.image.imageUrl()
-      })
-    }
+  constructor(){
+
   }
 
   async getAllProducts(){
     return this.products;
   }
 
-  async getProductById(productId){
+  getProductByName(productName){
+    const product = this.products.filter(product => product.name.toLowerCase().includes(productName.toLowerCase()) || product.ref.toLowerCase().includes(productName.toLowerCase()));
+
+    if (product) {
+      return {
+        message: 'Product by name founded',
+        data: product
+      }
+    }else{
+      return {message: 'Producto no encontrado... productName: ' + productName};
+    }
+  }
+
+  getProductById(productId){
     const product = this.products.find(product => product.id === productId);
     if (product) {
       return {
@@ -37,10 +99,12 @@ class ProductsServices {
 
   async postOneProduct(body){
     let product = {
-      id: faker.datatype.uuid(),
+      refId: faker.datatype.uuid(),
+      ref: body.ref,
       name: body.name,
+      cost: body.cost,
       price: body.price,
-      Image: body.Image
+      image: body.image
     }
     if (Object.keys(body).length != 0) {
 
@@ -54,7 +118,7 @@ class ProductsServices {
     }
   }
 
-  async patchOneProduct(productId, body){
+  patchOneProduct(productId, body){
     let index = this.products.findIndex(product => product.id === productId);
     if (index != -1) {
       const product = this.products[index];
@@ -72,9 +136,34 @@ class ProductsServices {
     }else{
       throw new Error('Product: ' + productId + ' not found');
     }
+
+    // if (index != -1) {
+    //   const product = this.products[index];
+    //   this.products[index] = {
+    //     ...product, //merge data in JSON
+    //     ...body //merge data in JSON
+    //   };
+    //   return product;
+    // }else{
+    //   return { ErrorMessage: 'Product: ' + productId + ' not found' };
+    // }
+    // if (product) {
+    //   if (body.name) {
+    //     product.name = body.name;
+    //   }
+    //   if (body.price) {
+    //     product.price = body.price;
+    //   }
+    //   return {
+    //     message: 'Product updated successfully',
+    //     data: product
+    //   }
+    // }else{
+    //   return { ErrorMessage: 'Product: ' + productId + ' not found' };
+    // }
   }
 
-  async deleteProduct(productId){
+  deleteProduct(productId){
     let product = this.products.find(product => product.id === productId);
     const productIndex = this.products.indexOf(product);
     if (product) {
