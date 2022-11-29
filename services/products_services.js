@@ -20,7 +20,7 @@ class ProductsServices {
   },{
     refId: faker.datatype.uuid(),
     ref: 'p-1234',
-    name: 'Gorra',
+    name: 'Pantalón',
     cost: 25000,
     price: 35000,
     image: faker.image.imageUrl()
@@ -28,41 +28,43 @@ class ProductsServices {
   {
     refId: faker.datatype.uuid(),
     ref: 'k-1414',
-    name: 'Camiseta',
+    name: 'Zapatos',
     cost: 35000,
     price: 50000,
     image: faker.image.imageUrl()
-  },{
-    refId: faker.datatype.uuid(),
-    ref: 'j-2452',
-    name: 'Gorra',
-    cost: 25000,
-    price: 35000,
-    image: faker.image.imageUrl()
-  },
-  {
-    refId: faker.datatype.uuid(),
-    ref: 'h-2365',
-    name: 'Camiseta',
-    cost: 35000,
-    price: 50000,
-    image: faker.image.imageUrl()
-  },{
-    refId: faker.datatype.uuid(),
-    ref: 'l-0001',
-    name: 'Gorra',
-    cost: 25000,
-    price: 35000,
-    image: faker.image.imageUrl()
-  },
-  {
-    refId: faker.datatype.uuid(),
-    ref: 'h-0325',
-    name: 'Camiseta',
-    cost: 35000,
-    price: 50000,
-    image: faker.image.imageUrl()
-  }];
+  }
+  // {
+  //   refId: faker.datatype.uuid(),
+  //   ref: 'j-2452',
+  //   name: 'Gorra',
+  //   cost: 25000,
+  //   price: 35000,
+  //   image: faker.image.imageUrl()
+  // },
+  // {
+  //   refId: faker.datatype.uuid(),
+  //   ref: 'h-2365',
+  //   name: 'Camiseta',
+  //   cost: 35000,
+  //   price: 50000,
+  //   image: faker.image.imageUrl()
+  // },{
+  //   refId: faker.datatype.uuid(),
+  //   ref: 'l-0001',
+  //   name: 'Gorra',
+  //   cost: 25000,
+  //   price: 35000,
+  //   image: faker.image.imageUrl()
+  // },
+  // {
+  //   refId: faker.datatype.uuid(),
+  //   ref: 'h-0325',
+  //   name: 'Camiseta',
+  //   cost: 35000,
+  //   price: 50000,
+  //   image: faker.image.imageUrl()
+  // }
+];
 
   constructor(){
 
