@@ -6,6 +6,7 @@ class ProductsServices {
     refId: faker.datatype.uuid(),
     ref: 'm-3547',
     name: 'Gorra',
+    quantity:1,
     cost: 25000,
     price: 35000,
     image: faker.image.imageUrl()
@@ -14,6 +15,7 @@ class ProductsServices {
     refId: faker.datatype.uuid(),
     ref: 'p-6958',
     name: 'Camiseta',
+    quantity:1,
     cost: 35000,
     price: 50000,
     image: faker.image.imageUrl()
@@ -21,6 +23,7 @@ class ProductsServices {
     refId: faker.datatype.uuid(),
     ref: 'p-1234',
     name: 'Pantalón',
+    quantity:1,
     cost: 25000,
     price: 35000,
     image: faker.image.imageUrl()
@@ -29,6 +32,7 @@ class ProductsServices {
     refId: faker.datatype.uuid(),
     ref: 'k-1414',
     name: 'Zapatos',
+    quantity:1,
     cost: 35000,
     price: 50000,
     image: faker.image.imageUrl()
