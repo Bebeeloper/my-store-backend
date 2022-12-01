@@ -6,7 +6,7 @@ class ProductsServices {
     refId: faker.datatype.uuid(),
     ref: 'm-3547',
     name: 'Gorra',
-    quantity:1,
+    quantity: 1,
     cost: 25000,
     price: 35000,
     image: faker.image.imageUrl()
@@ -15,7 +15,7 @@ class ProductsServices {
     refId: faker.datatype.uuid(),
     ref: 'p-6958',
     name: 'Camiseta',
-    quantity:1,
+    quantity: 1,
     cost: 35000,
     price: 50000,
     image: faker.image.imageUrl()
@@ -23,7 +23,7 @@ class ProductsServices {
     refId: faker.datatype.uuid(),
     ref: 'p-1234',
     name: 'Pantalón',
-    quantity:1,
+    quantity: 1,
     cost: 25000,
     price: 35000,
     image: faker.image.imageUrl()
@@ -32,42 +32,11 @@ class ProductsServices {
     refId: faker.datatype.uuid(),
     ref: 'k-1414',
     name: 'Zapatos',
-    quantity:1,
+    quantity: 1,
     cost: 35000,
     price: 50000,
     image: faker.image.imageUrl()
   }
-  // {
-  //   refId: faker.datatype.uuid(),
-  //   ref: 'j-2452',
-  //   name: 'Gorra',
-  //   cost: 25000,
-  //   price: 35000,
-  //   image: faker.image.imageUrl()
-  // },
-  // {
-  //   refId: faker.datatype.uuid(),
-  //   ref: 'h-2365',
-  //   name: 'Camiseta',
-  //   cost: 35000,
-  //   price: 50000,
-  //   image: faker.image.imageUrl()
-  // },{
-  //   refId: faker.datatype.uuid(),
-  //   ref: 'l-0001',
-  //   name: 'Gorra',
-  //   cost: 25000,
-  //   price: 35000,
-  //   image: faker.image.imageUrl()
-  // },
-  // {
-  //   refId: faker.datatype.uuid(),
-  //   ref: 'h-0325',
-  //   name: 'Camiseta',
-  //   cost: 35000,
-  //   price: 50000,
-  //   image: faker.image.imageUrl()
-  // }
 ];
 
   constructor(){
@@ -108,6 +77,7 @@ class ProductsServices {
       refId: faker.datatype.uuid(),
       ref: body.ref,
       name: body.name,
+      quantity: body.quantity,
       cost: body.cost,
       price: body.price,
       image: body.image
