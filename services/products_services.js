@@ -61,7 +61,7 @@ class ProductsServices {
   }
 
   getProductById(productId){
-    const product = this.products.find(product => product.id === productId);
+    const product = this.products.find(product => product.refId === productId);
     if (product) {
       return {
         message: 'Product founded',
@@ -95,7 +95,7 @@ class ProductsServices {
   }
 
   patchOneProduct(productId, body){
-    let index = this.products.findIndex(product => product.id === productId);
+    let index = this.products.findIndex(product => product.refId === productId);
     if (index != -1) {
       const product = this.products[index];
       this.products[index] = {
@@ -140,7 +140,7 @@ class ProductsServices {
   }
 
   deleteProduct(productId){
-    let product = this.products.find(product => product.id === productId);
+    let product = this.products.find(product => product.refId === productId);
     const productIndex = this.products.indexOf(product);
     if (product) {
       this.products.splice(productIndex, 1);
