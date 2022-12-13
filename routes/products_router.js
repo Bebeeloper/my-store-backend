@@ -5,9 +5,16 @@ const router = express.Router();
 const proService = new ProductsServices();
 
 // GET
+// router.get('/', async (req, res) => {
+//   const products = await proService.products;
+//   res.json(products);
+// });
+
+// GET with limit query
 router.get('/', async (req, res) => {
+  let limit = typeof(req.query.limit) !== 'undefined' ? Number(req.query.limit) : 25;
   const products = await proService.products;
-  res.json(products);
+  res.json(products.slice(0, limit));
 });
 
 // filter specific route should be before to dynamic endpoints like this
