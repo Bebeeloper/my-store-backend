@@ -5,7 +5,7 @@ class ProductsServices {
   products = [{
     refId: faker.datatype.uuid(),
     ref: 'm-3547',
-    name: 'Gorra',
+    name: 'Giovanny',
     quantity: 1,
     cost: 25000,
     price: 35000,
@@ -73,24 +73,32 @@ class ProductsServices {
   }
 
   async postOneProduct(body){
-    let product = {
-      refId: faker.datatype.uuid(),
-      ref: body.ref,
-      name: body.name,
-      quantity: body.quantity,
-      cost: body.cost,
-      price: body.price,
-      image: body.image
-    }
-    if (Object.keys(body).length != 0) {
 
-      this.products.push(product);
+    let productRef = this.products.find(product => product.ref === body.ref);
+
+    if (productRef) {
       return {
-        message: 'Product created successfully',
-        data: product
+        message: 'La referencia ya existe'
       }
     }else{
-      throw new Error('Debes poner un body en formato JSON');
+      let product = {
+        refId: faker.datatype.uuid(),
+        ref: body.ref,
+        name: body.name,
+        quantity: body.quantity,
+        cost: body.cost,
+        price: body.price,
+        image: body.image
+      }
+      if (Object.keys(body).length != 0) {
+          this.products.push(product);
+          return {
+            message: 'Product created successfully',
+            data: product
+          }
+      }else{
+        throw new Error('Debes poner un body en formato JSON');
+      }
     }
   }
 
