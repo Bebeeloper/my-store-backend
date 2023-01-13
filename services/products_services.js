@@ -122,20 +122,22 @@ class ProductsServices {
         message: 'La referencia ya existe'
       }
     }else{
-      let product = {
-        refId: faker.datatype.uuid(),
-        ref: body.ref,
-        name: body.name,
-        quantity: body.quantity,
-        cost: body.cost,
-        price: body.price,
-        image: body.image
-      }
+
       if (Object.keys(body).length != 0) {
           // this.products.push(product);
 
           const responseDB = await client.query(`INSERT INTO "products" ("ref", "name", "quantity", "cost", "price", "image")
-             VALUES ($1, $2, $3, $4, $5, $6)`, [body.ref, body.name, body.quantity, body.cost, body.price, body.image]);
+             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`, [body.ref, body.name, body.quantity, body.cost, body.price, body.image]);
+
+          let product = {
+            refId: responseDB.rows[0].id,
+            ref: body.ref,
+            name: body.name,
+            quantity: body.quantity,
+            cost: body.cost,
+            price: body.price,
+            image: body.image
+          }
           return {
             message: 'Product created successfully',
             data: product
