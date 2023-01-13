@@ -1,50 +1,57 @@
 const faker = require('faker');
+const getConnection = require('../libs/postgres');
 
 class ProductsServices {
 
-  products = [{
-    refId: faker.datatype.uuid(),
-    ref: 'm-3547',
-    name: 'Giovanny',
-    quantity: 1,
-    cost: 25000,
-    price: 35000,
-    image: faker.image.imageUrl()
-  },
-  {
-    refId: faker.datatype.uuid(),
-    ref: 'p-6958',
-    name: 'Camiseta',
-    quantity: 1,
-    cost: 35000,
-    price: 50000,
-    image: faker.image.imageUrl()
-  },{
-    refId: faker.datatype.uuid(),
-    ref: 'p-1234',
-    name: 'Pantalón',
-    quantity: 1,
-    cost: 25000,
-    price: 35000,
-    image: faker.image.imageUrl()
-  },
-  {
-    refId: faker.datatype.uuid(),
-    ref: 'k-1414',
-    name: 'Zapatos',
-    quantity: 1,
-    cost: 35000,
-    price: 50000,
-    image: faker.image.imageUrl()
-  }
-];
+//   products = [{
+//     refId: faker.datatype.uuid(),
+//     ref: 'm-3547',
+//     name: 'Giovanny',
+//     quantity: 1,
+//     cost: 25000,
+//     price: 35000,
+//     image: faker.image.imageUrl()
+//   },
+//   {
+//     refId: faker.datatype.uuid(),
+//     ref: 'p-6958',
+//     name: 'Camiseta',
+//     quantity: 1,
+//     cost: 35000,
+//     price: 50000,
+//     image: faker.image.imageUrl()
+//   },{
+//     refId: faker.datatype.uuid(),
+//     ref: 'p-1234',
+//     name: 'Pantalón',
+//     quantity: 1,
+//     cost: 25000,
+//     price: 35000,
+//     image: faker.image.imageUrl()
+//   },
+//   {
+//     refId: faker.datatype.uuid(),
+//     ref: 'k-1414',
+//     name: 'Zapatos',
+//     quantity: 1,
+//     cost: 35000,
+//     price: 50000,
+//     image: faker.image.imageUrl()
+//   }
+// ];
 
   constructor(){
 
   }
 
+  // async getAllProducts(){
+  //   return this.products;
+  // }
+
   async getAllProducts(){
-    return this.products;
+    const client = await getConnection();
+    const responseDB = await client.query('SELECT * FROM products');
+    return responseDB.rows;
   }
 
   getProductByName(productName){
@@ -72,9 +79,43 @@ class ProductsServices {
     }
   }
 
+  // async postOneProduct(body){
+
+  //   let productRef = this.products.find(product => product.ref === body.ref);
+
+  //   if (productRef) {
+  //     return {
+  //       message: 'La referencia ya existe'
+  //     }
+  //   }else{
+  //     let product = {
+  //       refId: faker.datatype.uuid(),
+  //       ref: body.ref,
+  //       name: body.name,
+  //       quantity: body.quantity,
+  //       cost: body.cost,
+  //       price: body.price,
+  //       image: body.image
+  //     }
+  //     if (Object.keys(body).length != 0) {
+  //         this.products.push(product);
+  //         return {
+  //           message: 'Product created successfully',
+  //           data: product
+  //         }
+  //     }else{
+  //       throw new Error('Debes poner un body en formato JSON');
+  //     }
+  //   }
+  // }
+
   async postOneProduct(body){
 
-    let productRef = this.products.find(product => product.ref === body.ref);
+    const client = await getConnection();
+
+    const getDBProducts = await this.getAllProducts();
+
+    let productRef = getDBProducts.find(product => product.ref === body.ref);
 
     if (productRef) {
       return {
@@ -91,7 +132,10 @@ class ProductsServices {
         image: body.image
       }
       if (Object.keys(body).length != 0) {
-          this.products.push(product);
+          // this.products.push(product);
+
+          const responseDB = await client.query(`INSERT INTO "products" ("ref", "name", "quantity", "cost", "price", "image")
+             VALUES ($1, $2, $3, $4, $5, $6)`, [body.ref, body.name, body.quantity, body.cost, body.price, body.image]);
           return {
             message: 'Product created successfully',
             data: product
