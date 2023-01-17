@@ -3,50 +3,9 @@ const getConnection = require('../libs/postgres');
 
 class ProductsServices {
 
-//   products = [{
-//     refId: faker.datatype.uuid(),
-//     ref: 'm-3547',
-//     name: 'Giovanny',
-//     quantity: 1,
-//     cost: 25000,
-//     price: 35000,
-//     image: faker.image.imageUrl()
-//   },
-//   {
-//     refId: faker.datatype.uuid(),
-//     ref: 'p-6958',
-//     name: 'Camiseta',
-//     quantity: 1,
-//     cost: 35000,
-//     price: 50000,
-//     image: faker.image.imageUrl()
-//   },{
-//     refId: faker.datatype.uuid(),
-//     ref: 'p-1234',
-//     name: 'Pantalón',
-//     quantity: 1,
-//     cost: 25000,
-//     price: 35000,
-//     image: faker.image.imageUrl()
-//   },
-//   {
-//     refId: faker.datatype.uuid(),
-//     ref: 'k-1414',
-//     name: 'Zapatos',
-//     quantity: 1,
-//     cost: 35000,
-//     price: 50000,
-//     image: faker.image.imageUrl()
-//   }
-// ];
-
   constructor(){
 
   }
-
-  // async getAllProducts(){
-  //   return this.products;
-  // }
 
   async getAllProducts(){
     const client = await getConnection();
@@ -54,13 +13,30 @@ class ProductsServices {
     return responseDB.rows;
   }
 
-  getProductByName(productName){
-    const product = this.products.filter(product => product.name.toLowerCase().includes(productName.toLowerCase()) || product.ref.toLowerCase().includes(productName.toLowerCase()));
+  // async getProductByName(productName){
+  //   const client = await getConnection();
+  //   const responseDB = await client.query('SELECT * FROM products WHERE ref = $1', [productName]);
+  //   // const product = this.products.filter(product => product.name.toLowerCase().includes(productName.toLowerCase()) || product.ref.toLowerCase().includes(productName.toLowerCase()));
 
-    if (product) {
+  //   if (product) {
+  //     return {
+  //       message: 'Product by name founded',
+  //       data: product
+  //     }
+  //   }else{
+  //     return {message: 'Producto no encontrado... productName: ' + productName};
+  //   }
+  // }
+
+  async getProductByName(productName){
+    const client = await getConnection();
+    const responseDB = await client.query("SELECT * FROM products WHERE LOWER(ref) LIKE $1 or LOWER(name) LIKE $1", ['%' + productName + '%']);
+    // const product = this.products.filter(product => product.name.toLowerCase().includes(productName.toLowerCase()) || product.ref.toLowerCase().includes(productName.toLowerCase()));
+
+    if (responseDB) {
       return {
         message: 'Product by name founded',
-        data: product
+        data: responseDB.rows
       }
     }else{
       return {message: 'Producto no encontrado... productName: ' + productName};

@@ -30,10 +30,9 @@ router.get('/', async (req, res) => {
 // });
 
 // Get product by name
-router.get('/name/:productName', (req, res) => {
+router.get('/name/:productName', async (req, res) => {
   const { productName } = req.params;
-  const product = proService.getProductByName(productName);
-
+  const product = await proService.getProductByName(productName);
   if (product.ErrorMessage) return res.status(404).json(product);
   res.status(200).json(product);
 });
