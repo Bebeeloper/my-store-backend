@@ -14,8 +14,6 @@ class ProductsServices {
   }
 
   // async getProductByName(productName){
-  //   const client = await getConnection();
-  //   const responseDB = await client.query('SELECT * FROM products WHERE ref = $1', [productName]);
   //   // const product = this.products.filter(product => product.name.toLowerCase().includes(productName.toLowerCase()) || product.ref.toLowerCase().includes(productName.toLowerCase()));
 
   //   if (product) {
@@ -28,10 +26,10 @@ class ProductsServices {
   //   }
   // }
 
+  // Make DB connection and prepare the response for router to get product by name or ref
   async getProductByName(productName){
     const client = await getConnection();
     const responseDB = await client.query("SELECT * FROM products WHERE LOWER(ref) LIKE $1 or LOWER(name) LIKE $1", ['%' + productName + '%']);
-    // const product = this.products.filter(product => product.name.toLowerCase().includes(productName.toLowerCase()) || product.ref.toLowerCase().includes(productName.toLowerCase()));
 
     if (responseDB) {
       return {
@@ -43,12 +41,26 @@ class ProductsServices {
     }
   }
 
-  getProductById(productId){
-    const product = this.products.find(product => product.refId === productId);
-    if (product) {
+  // getProductById(productId){
+  //   const product = this.products.find(product => product.refId === productId);
+  //   if (product) {
+  //     return {
+  //       message: 'Product founded',
+  //       data: product
+  //     }
+  //   }else{
+  //     throw new Error('Producto no encontrado... productId: ' + productId);
+  //   }
+  // }
+
+  async getProductById(productId){
+    const client = await getConnection();
+    const responseDB = await client.query("SELECT * FROM products WHERE id = $1", [productId]);
+
+    if (responseDB) {
       return {
         message: 'Product founded',
-        data: product
+        data: responseDB.rows
       }
     }else{
       throw new Error('Producto no encontrado... productId: ' + productId);
@@ -92,6 +104,7 @@ class ProductsServices {
     const getDBProducts = await this.getAllProducts();
 
     let productRef = getDBProducts.find(product => product.ref === body.ref);
+    console.log('Log en el post: ', productRef);
 
     if (productRef) {
       return {
@@ -124,49 +137,52 @@ class ProductsServices {
     }
   }
 
-  patchOneProduct(productId, body){
-    let index = this.products.findIndex(product => product.refId === productId);
+  // patchOneProduct(productId, body){
+  //   let index = this.products.findIndex(product => product.refId === productId);
+  //   if (index != -1) {
+  //     const product = this.products[index];
+  //     this.products[index] = {
+  //       ...product, //merge data in JSON
+  //       ...body //merge data in JSON
+  //     };
+  //     return {
+  //       Message: 'Product updated successfully',
+  //       data: {
+  //         ...product,
+  //         ...body
+  //       }
+  //     };
+  //   }else{
+  //     throw new Error('Product: ' + productId + ' not found');
+  //   }
+  // }
+
+  async patchOneProduct(productId, body){
+    const client = await getConnection();
+    const getDBProducts = await this.getAllProducts();
+    let productForUpdate = getDBProducts.find(product => product.id === parseInt(productId));
+    const fieldsToUpdate = {
+      ...productForUpdate,
+      ...body
+    };
+
+    let index = getDBProducts.findIndex(product => product.id === parseInt(productId));
     if (index != -1) {
-      const product = this.products[index];
-      this.products[index] = {
-        ...product, //merge data in JSON
-        ...body //merge data in JSON
-      };
+      // const product = this.products[index];
+      // this.products[index] = {
+      //   ...product, //merge data in JSON
+      //   ...body //merge data in JSON
+      // };
+      const responseDB = await client.query('UPDATE products SET ref = $1, name = $2, quantity = $3, cost = $4, price = $5, image = $6 WHERE id = $7',
+        [fieldsToUpdate.ref, fieldsToUpdate.name, fieldsToUpdate.quantity, fieldsToUpdate.cost, fieldsToUpdate.price, fieldsToUpdate.image, parseInt(productId)])
       return {
         Message: 'Product updated successfully',
-        data: {
-          ...product,
-          ...body
-        }
+        data: fieldsToUpdate
+
       };
     }else{
       throw new Error('Product: ' + productId + ' not found');
     }
-
-    // if (index != -1) {
-    //   const product = this.products[index];
-    //   this.products[index] = {
-    //     ...product, //merge data in JSON
-    //     ...body //merge data in JSON
-    //   };
-    //   return product;
-    // }else{
-    //   return { ErrorMessage: 'Product: ' + productId + ' not found' };
-    // }
-    // if (product) {
-    //   if (body.name) {
-    //     product.name = body.name;
-    //   }
-    //   if (body.price) {
-    //     product.price = body.price;
-    //   }
-    //   return {
-    //     message: 'Product updated successfully',
-    //     data: product
-    //   }
-    // }else{
-    //   return { ErrorMessage: 'Product: ' + productId + ' not found' };
-    // }
   }
 
   deleteProduct(productId){

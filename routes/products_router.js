@@ -48,7 +48,6 @@ router.get('/:productId', async (req, res) => {
       ErrorMessage: error.message
     })
   }
-
 });
 
 // Endpoint advanced - show category and product Ids 2 parameters in same endpoint
@@ -86,7 +85,6 @@ router.patch('/:productId', async (req, res) => {
       ErrorMessage: error.message
     })
   }
-
 });
 
 // DELETE
