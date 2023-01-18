@@ -168,13 +168,8 @@ class ProductsServices {
 
     let index = getDBProducts.findIndex(product => product.id === parseInt(productId));
     if (index != -1) {
-      // const product = this.products[index];
-      // this.products[index] = {
-      //   ...product, //merge data in JSON
-      //   ...body //merge data in JSON
-      // };
       const responseDB = await client.query('UPDATE products SET ref = $1, name = $2, quantity = $3, cost = $4, price = $5, image = $6 WHERE id = $7',
-        [fieldsToUpdate.ref, fieldsToUpdate.name, fieldsToUpdate.quantity, fieldsToUpdate.cost, fieldsToUpdate.price, fieldsToUpdate.image, parseInt(productId)])
+        [fieldsToUpdate.ref, fieldsToUpdate.name, fieldsToUpdate.quantity, fieldsToUpdate.cost, fieldsToUpdate.price, fieldsToUpdate.image, parseInt(productId)]);
       return {
         Message: 'Product updated successfully',
         data: fieldsToUpdate
@@ -185,18 +180,41 @@ class ProductsServices {
     }
   }
 
-  deleteProduct(productId){
-    let product = this.products.find(product => product.refId === productId);
-    const productIndex = this.products.indexOf(product);
-    if (product) {
-      this.products.splice(productIndex, 1);
+  // deleteProduct(productId){
+  //   let product = this.products.find(product => product.refId === productId);
+  //   const productIndex = this.products.indexOf(product);
+  //   if (product) {
+  //     this.products.splice(productIndex, 1);
+  //     return {
+  //       message: 'Product deleted successfully',
+  //       product
+  //     }
+  //   }else{
+  //     return { ErrorMessage: 'Product: ' + productId + ' not found' };
+  //   }
+  // }
+
+  async deleteProduct(productId){
+    const client = await getConnection();
+    // const responseDB = await client.query("SELECT * FROM products WHERE id = $1", [parseInt(productId)]);
+    const responseDB = await this.getDBById(productId);
+    console.log('No se que pasa: ', responseDB);
+
+    if (responseDB) {
+      const responseDeleteDB = await client.query('DELETE FROM products WHERE id = $1', [parseInt(productId)]);
       return {
         message: 'Product deleted successfully',
-        product
+        data: responseDB
       }
     }else{
       return { ErrorMessage: 'Product: ' + productId + ' not found' };
     }
+  }
+
+  async getDBById(productId){
+    const client = await getConnection();
+    const responseDB = await client.query("SELECT * FROM products WHERE id = $1", [parseInt(productId)]);
+    return responseDB.rows;
   }
 
 }
