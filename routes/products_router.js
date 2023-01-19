@@ -35,6 +35,7 @@ router.get('/name/:productName', async (req, res) => {
   const product = await proService.getProductByName(productName);
   if (product.ErrorMessage) return res.status(404).json(product);
   res.status(200).json(product);
+  console.log('Producto en el router: ',product);
 });
 
 // Get product by id

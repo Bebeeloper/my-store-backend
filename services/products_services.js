@@ -1,25 +1,27 @@
 const faker = require('faker');
 const getConnection = require('../libs/postgres');
+const pool = require('../libs/postgres.pool');
 
 class ProductsServices {
 
   constructor(){
-
+    this.pool = pool;
+    this.pool.on('error', (err) => console.error(err));
   }
 
   // Get all products from DB
   async getAllProducts(){
-    const client = await getConnection();
-    const responseDB = await client.query('SELECT * FROM products ORDER BY id ASC');
+    const query = 'SELECT * FROM products ORDER BY id ASC';
+    const responseDB = await this.pool.query(query);
     return responseDB.rows;
   }
 
   // Make DB connection and prepare the response for router to get product by name or ref
   async getProductByName(productName){
-    const client = await getConnection();
-    const responseDB = await client.query("SELECT * FROM products WHERE LOWER(ref) LIKE $1 or LOWER(name) LIKE $1 ORDER BY id ASC", ['%' + productName + '%']);
+    const query = 'SELECT * FROM products WHERE LOWER(ref) LIKE $1 or LOWER(name) LIKE $1 ORDER BY id ASC';
+    const responseDB = await this.pool.query(query, ['%' + productName + '%']);
 
-    if (responseDB) {
+    if (responseDB.rows.length > 0) {
       return {
         message: 'Product by name founded',
         data: responseDB.rows
