@@ -10,7 +10,7 @@ class ProductsServices {
   // Get all products from DB
   async getAllProducts(){
     const client = await getConnection();
-    const responseDB = await client.query('SELECT * FROM products');
+    const responseDB = await client.query('SELECT * FROM products ORDER BY id ASC');
     return responseDB.rows;
   }
 
@@ -52,7 +52,6 @@ class ProductsServices {
         message: 'La referencia ya existe'
       }
     }else{
-
       if (Object.keys(body).length != 0) {
 
           const responseDB = await client.query(`INSERT INTO "products" ("ref", "name", "quantity", "cost", "price", "image")
@@ -95,7 +94,7 @@ class ProductsServices {
     const client = await getConnection();
     const responseDB = await this.getDBById(productId);
 
-    if (responseDB.rows) {
+    if (responseDB) {
       const responseDeleteDB = await client.query('DELETE FROM products WHERE id = $1', [parseInt(productId)]);
       return {
         message: 'Product deleted successfully',
