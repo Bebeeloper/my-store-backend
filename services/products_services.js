@@ -17,7 +17,7 @@ class ProductsServices {
   // Make DB connection and prepare the response for router to get product by name or ref
   async getProductByName(productName){
     const client = await getConnection();
-    const responseDB = await client.query("SELECT * FROM products WHERE LOWER(ref) LIKE $1 or LOWER(name) LIKE $1", ['%' + productName + '%']);
+    const responseDB = await client.query("SELECT * FROM products WHERE LOWER(ref) LIKE $1 or LOWER(name) LIKE $1 ORDER BY id ASC", ['%' + productName + '%']);
 
     if (responseDB) {
       return {
