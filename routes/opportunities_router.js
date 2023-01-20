@@ -11,4 +11,17 @@ router.get('/', async (req, res) => {
   res.json(opportunities.slice(0, limit));
 });
 
+// Get opportunity by account document
+router.get('/:document', async (req, res) => {
+  try {
+    const { document } = req.params;
+    const product = await oppService.getOppByDocument(document);
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(404).json({
+      ErrorMessage: error.message
+    })
+  }
+});
+
 module.exports = router;

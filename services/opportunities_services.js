@@ -12,6 +12,7 @@ class OpportunityServices {
     const query = 'SELECT * FROM opportunities ORDER BY id ASC';
     const responseDB = await this.pool.query(query);
     let opportunitiesWithAccounts = [];
+
     for (let index = 0; index < responseDB.rows.length; index++) {
       // Related account query
       const queryRelatedAccount = 'SELECT * FROM accounts WHERE id = $1';
@@ -31,6 +32,17 @@ class OpportunityServices {
     }
 
     return opportunitiesWithAccounts;
+  }
+
+  async getOppByDocument(document){
+    const query = 'SELECT * FROM opportunities ' +
+                  'JOIN accounts ON opportunities.account_id = accounts.id ' +
+                  'AND accounts.document_number = $1';
+    const array = [document];
+    const responseBD = await this.pool.query(query, array);
+
+    console.log('Opportunities: ', responseBD.rows);
+    return responseBD.rows;
   }
 
 }
