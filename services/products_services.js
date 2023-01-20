@@ -19,7 +19,8 @@ class ProductsServices {
   // Make DB connection and prepare the response for router to get product by name or ref
   async getProductByName(productName){
     const query = 'SELECT * FROM products WHERE LOWER(ref) LIKE $1 or LOWER(name) LIKE $1 ORDER BY id ASC';
-    const responseDB = await this.pool.query(query, ['%' + productName + '%']);
+    const array = ['%' + productName + '%'];
+    const responseDB = await this.pool.query(query, array);
 
     if (responseDB.rows.length > 0) {
       return {
@@ -32,13 +33,12 @@ class ProductsServices {
   }
 
   async getProductById(productId){
-    const client = await getConnection();
     const responseDB = await this.getDBById(productId);
 
-    if (responseDB.rows) {
+    if (responseDB.length > 0) {
       return {
         message: 'Product founded',
-        data: responseDB.rows
+        data: responseDB
       }
     }else{
       throw new Error('Producto no encontrado... productId: ' + productId);
@@ -46,8 +46,9 @@ class ProductsServices {
   }
 
   async postOneProduct(body){
-    const client = await getConnection();
-    const getDBProducts = await client.query("SELECT * FROM products WHERE ref = $1", [body.ref]);
+    const query = 'SELECT * FROM products WHERE ref = $1';
+    const array = [body.ref];
+    const getDBProducts = await this.pool.query(query, array);
 
     if (getDBProducts.rows.length > 0) {
       return {
@@ -55,14 +56,14 @@ class ProductsServices {
       }
     }else{
       if (Object.keys(body).length != 0) {
+        const queryUpdate = 'INSERT INTO products (ref, name, quantity, cost, price, image) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
+        const arrayUpdate = [body.ref, body.name, body.quantity, body.cost, body.price, body.image];
+        const responseDB = await this.pool.query(queryUpdate, arrayUpdate);
 
-          const responseDB = await client.query(`INSERT INTO "products" ("ref", "name", "quantity", "cost", "price", "image")
-             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`, [body.ref, body.name, body.quantity, body.cost, body.price, body.image]);
-
-          return {
-            message: 'Product created successfully',
-            data: responseDB.rows
-          }
+        return {
+          message: 'Product created successfully',
+          data: responseDB.rows
+        }
       }else{
         throw new Error('Debes poner un body en formato JSON');
       }
@@ -81,8 +82,10 @@ class ProductsServices {
     };
 
     if (productFind) {
-      const responseDB = await client.query('UPDATE products SET ref = $1, name = $2, quantity = $3, cost = $4, price = $5, image = $6 WHERE id = $7',
-        [fieldsToUpdate.ref, fieldsToUpdate.name, fieldsToUpdate.quantity, fieldsToUpdate.cost, fieldsToUpdate.price, fieldsToUpdate.image, parseInt(productId)]);
+      const query = 'UPDATE products SET ref = $1, name = $2, quantity = $3, cost = $4, price = $5, image = $6 WHERE id = $7';
+      const array = [fieldsToUpdate.ref, fieldsToUpdate.name, fieldsToUpdate.quantity, fieldsToUpdate.cost, fieldsToUpdate.price, fieldsToUpdate.image, parseInt(productId)];
+      const responseDB = await this.pool.query(query, array);
+
       return {
         Message: 'Product updated successfully',
         data: fieldsToUpdate
@@ -93,11 +96,13 @@ class ProductsServices {
   }
 
   async deleteProduct(productId){
-    const client = await getConnection();
     const responseDB = await this.getDBById(productId);
 
-    if (responseDB) {
-      const responseDeleteDB = await client.query('DELETE FROM products WHERE id = $1', [parseInt(productId)]);
+    if (responseDB.length > 0) {
+      const query = 'DELETE FROM products WHERE id = $1';
+      const array = [parseInt(productId)];
+      const responseDeleteDB = await this.pool.query(query, array);
+
       return {
         message: 'Product deleted successfully',
         data: responseDB
@@ -108,8 +113,9 @@ class ProductsServices {
   }
 
   async getDBById(productId){
-    const client = await getConnection();
-    const responseDB = await client.query("SELECT * FROM products WHERE id = $1", [parseInt(productId)]);
+    const query = 'SELECT * FROM products WHERE id = $1';
+    const array = [parseInt(productId)];
+    const responseDB = await this.pool.query(query, array);
     return responseDB.rows;
   }
 
