@@ -40,9 +40,21 @@ class OpportunityServices {
                   'AND accounts.document_number = $1';
     const array = [document];
     const responseBD = await this.pool.query(query, array);
+    let oppBody = [];
+    let oppByName;
+    for (let i = 0; i < responseBD.rows.length; i++) {
+      oppBody.push({
+        "id": responseBD.rows[i].id,
+        "account_id": responseBD.rows[i].account_id,
+        "amount": responseBD.rows[i].amount,
+        "stage_name": responseBD.rows[i].stage_name,
+        "close_date": responseBD.rows[i].close_date
+      });
 
-    console.log('Opportunities: ', responseBD.rows);
-    return responseBD.rows;
+      const queryAcc = '';
+    }
+
+    return oppBody;
   }
 
 }
