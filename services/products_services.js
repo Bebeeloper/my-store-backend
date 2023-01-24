@@ -71,7 +71,6 @@ class ProductsServices {
   }
 
   async patchOneProduct(productId, body){
-    const client = await getConnection();
     const getDBProduct = await this.getDBById(productId);
     let productArray = getDBProduct;
     let productFind = productArray.find(product => product.id === parseInt(productId));

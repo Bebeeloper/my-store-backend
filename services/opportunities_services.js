@@ -34,6 +34,7 @@ class OpportunityServices {
     return opportunitiesWithAccounts;
   }
 
+  // Get opp by account document
   async getOppByDocument(document){
     const query = 'SELECT opportunities.id, opportunities.account_id,' +
                          'opportunities.amount, opportunities.stage_name,' +
@@ -71,6 +72,56 @@ class OpportunityServices {
     }
 
     return oppByName;
+  }
+
+  // Create opp
+  async postOpp(body){
+    if (Object.keys(body).length != 0) {
+      const queryInsertOpp = 'INSERT INTO opportunities (account_id, amount, stage_name, close_date) VALUES ($1, $2, $3, $4) RETURNING *';
+      const arrayInsertOpp = [body.account_id, body.amount, body.stage_name, body.close_date];
+      const responseDB = await this.pool.query(queryInsertOpp, arrayInsertOpp);
+
+      if (responseDB.rows.length > 0) {
+        return {
+          message: 'Opportunity created successfully',
+          data: responseDB.rows
+        }
+      }
+    }else{
+      throw new Error('Debes poner un body en formato JSON');
+    }
+  }
+
+  async patchOpp(oppId, body){
+    const getDBOpp = await this.getDBById(oppId);
+    let oppArray = getDBOpp;
+    let oppFind = oppArray.find(opp => opp.id === parseInt(oppId));
+
+    const fieldsToUpdate = {
+      ...oppFind,
+      ...body
+    };
+
+    if (oppFind) {
+      const query = 'UPDATE opportunities SET account_id = $1, amount = $2, stage_name = $3, close_date = $4 WHERE id = $5';
+      const array = [fieldsToUpdate.account_id, fieldsToUpdate.amount, fieldsToUpdate.stage_name, fieldsToUpdate.close_date, parseInt(oppId)];
+      const responseDB = await this.pool.query(query, array);
+
+      return {
+        Message: 'Opportunity updated successfully',
+        data: fieldsToUpdate
+      };
+    }else{
+      throw new Error('Opportunity: ' + oppId + ' not found');
+    }
+
+  }
+
+  async getDBById(oppId){
+    const query = 'SELECT * FROM opportunities WHERE id = $1';
+    const array = [parseInt(oppId)];
+    const responseDB = await this.pool.query(query, array);
+    return responseDB.rows;
   }
 
 }

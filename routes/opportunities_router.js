@@ -24,4 +24,32 @@ router.get('/:document', async (req, res) => {
   }
 });
 
+// POST
+router.post('/',  async (req, res) => {
+  try {
+    const body = req.body;
+    const opportunity = await oppService.postOpp(body);
+    res.status(200).json(opportunity);
+  } catch (error) {
+    res.status(404).json({
+      ErrorMessage: error.message
+    });
+  }
+
+});
+
+// PATCH
+router.patch('/:oppId', async (req, res) => {
+  try {
+    const { oppId } = req.params;
+    const body = req.body;
+    const opportunity = await oppService.patchOpp(oppId, body);
+    res.status(200).json(opportunity);
+  } catch (error) {
+    res.status(404).json({
+      ErrorMessage: error.message
+    })
+  }
+});
+
 module.exports = router;
