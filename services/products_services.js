@@ -1,5 +1,3 @@
-const faker = require('faker');
-const getConnection = require('../libs/postgres');
 const pool = require('../libs/postgres.pool');
 
 class ProductsServices {
