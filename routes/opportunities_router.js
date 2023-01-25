@@ -52,4 +52,18 @@ router.patch('/:oppId', async (req, res) => {
   }
 });
 
+// DELETE
+router.delete('/:oppId', async (req, res) => {
+  try {
+    const { oppId } = req.params;
+    const opportunity = await oppService.deleteOpp(oppId);
+    res.status(200).json(opportunity);
+  } catch (error) {
+    res.status(404).json({
+      ErrorMessage: error.message
+    })
+  }
+
+});
+
 module.exports = router;

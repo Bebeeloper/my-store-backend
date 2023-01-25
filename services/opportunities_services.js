@@ -9,7 +9,7 @@ class OpportunityServices {
 
   // Get all products from DB
   async getAllOpportunities(){
-    const query = 'SELECT * FROM opportunities ORDER BY id ASC';
+    const query = 'SELECT * FROM opportunities ORDER BY id DESC';
     const responseDB = await this.pool.query(query);
     let opportunitiesWithAccounts = [];
 
@@ -115,6 +115,22 @@ class OpportunityServices {
       throw new Error('Opportunity: ' + oppId + ' not found');
     }
 
+  }
+
+  async deleteOpp(oppId){
+    const getDBOpp = await this.getDBById(oppId);
+    if (getDBOpp.length > 0) {
+      const query = 'DELETE FROM opportunities WHERE id = $1';
+      const array = [parseInt(oppId)];
+      const responseDelete = await this.pool.query(query, array);
+      return {
+        Message: 'Opportunity ' + oppId + ' has been eliminated sucesfully',
+        data:  getDBOpp
+      };
+
+    }else{
+      throw new Error('Opportunity: ' + oppId + ' not found');
+    }
   }
 
   async getDBById(oppId){
