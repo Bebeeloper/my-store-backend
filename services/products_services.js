@@ -11,7 +11,7 @@ class ProductsServices {
 
   // Get all products from DB
   async getAllProducts(){
-    const query = 'SELECT * FROM products ORDER BY id ASC';
+    const query = 'SELECT * FROM products ORDER BY id DESC';
     const responseDB = await this.pool.query(query);
     return responseDB.rows;
   }
