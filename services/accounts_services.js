@@ -45,6 +45,49 @@ class AccountsServices {
     }
   }
 
+  // Patch account
+  async patchAccount(accId, body){
+    const getDBAcc = await this.getDBById(accId);
+    let accArray = getDBAcc;
+    let accFind = accArray.find(acc => acc.id === parseInt(accId));
+
+    const fieldsToUpdate = {
+      ...accFind,
+      ...body
+    };
+
+    if (accFind) {
+      const query = 'UPDATE accounts SET first_name = $1, last_name = $2, document_number = $3, email = $4 WHERE id = $5';
+      const array = [fieldsToUpdate.first_name, fieldsToUpdate.last_name, fieldsToUpdate.document_number, fieldsToUpdate.email, parseInt(accId)];
+      const responseDB = await this.pool.query(query, array);
+
+      return {
+        Message: 'Account updated successfully',
+        data: fieldsToUpdate
+      };
+    }else{
+      throw new Error('Account: ' + accId + ' not found');
+    }
+
+  }
+
+  // Delete account
+  async deleteAccount(accId){
+    const getDBAcc = await this.getDBById(accId);
+    if (getDBAcc.length > 0) {
+      const query = 'DELETE FROM accounts WHERE id = $1';
+      const array = [parseInt(accId)];
+      const responseDelete = await this.pool.query(query, array);
+      return {
+        Message: 'Account ' + accId + ' has been eliminated successfully',
+        data:  getDBAcc
+      };
+
+    }else{
+      throw new Error('Account: ' + accId + ' not found');
+    }
+  }
+
   async getDBById(productId){
     const query = 'SELECT * FROM accounts WHERE id = $1';
     const array = [parseInt(productId)];

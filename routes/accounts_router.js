@@ -38,4 +38,32 @@ router.post('/',  async (req, res) => {
 
 });
 
+// PATCH Account
+router.patch('/:accId', async (req, res) => {
+  try {
+    const { accId } = req.params;
+    const body = req.body;
+    const account = await accService.patchAccount(accId, body);
+    res.status(200).json(account);
+  } catch (error) {
+    res.status(404).json({
+      ErrorMessage: error.message
+    })
+  }
+});
+
+// DELETE
+router.delete('/:accId', async (req, res) => {
+  try {
+    const { accId } = req.params;
+    const account = await accService.deleteAccount(accId);
+    res.status(200).json(account);
+  } catch (error) {
+    res.status(404).json({
+      ErrorMessage: error.message
+    })
+  }
+
+});
+
 module.exports = router;

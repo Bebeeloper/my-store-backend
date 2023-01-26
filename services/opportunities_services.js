@@ -128,7 +128,7 @@ class OpportunityServices {
       const array = [parseInt(oppId)];
       const responseDelete = await this.pool.query(query, array);
       return {
-        Message: 'Opportunity ' + oppId + ' has been eliminated sucesfully',
+        Message: 'Opportunity ' + oppId + ' has been eliminated successfully',
         data:  getDBOpp
       };
 
