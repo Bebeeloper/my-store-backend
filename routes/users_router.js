@@ -1,47 +1,27 @@
 const express = require('express');
+const UsersServices = require('../services/users_services');
 const router = express.Router();
 
-const users = [{
-  userName: 'kmospina',
-  password: '123'
-},{
-  userName: 'mmendez',
-  password: '321'
-},
-{
-  userName: 'gpardo',
-  password: '0000'
-},
-{
-  userName: 'peter',
-  password: '123'
-}];
+const userService = new UsersServices();
 
-// Show list of users
-router.get('/', (req, res) => {
-  res.send(users)
+router.get('/', async (req, res) => {
+  let limit = typeof(req.query.limit) !== 'undefined' ? Number(req.query.limit) : 25;
+  const users = await userService.getAllUsers();
+  res.json(users.slice(0, limit));
 });
 
 // Validate user login 'simulation'
-router.get('/:userName/:password', (req, res) => {
-
-  let usersToShow = {};
-  const { userName, password } = req.params;
-
-  for (const user of users) {
-    if (user.userName == userName && user.password == password) {
-      usersToShow = user;
-    }
-  }
-
-  if (usersToShow) {
-    res.status(200).json(usersToShow);
-  }else{
+router.get('/:password/:email', async (req, res) => {
+  try {
+    const { password } = req.params;
+    const { email } = req.params;
+    const user = await userService.userLogIn(password, email);
+    res.status(200).json(user);
+  } catch (error) {
     res.status(404).json({
-      message: 'Passwor or userName wrong...' + ' userName: ' + userName,
-    });
+      ErrorMessage: error.message
+    })
   }
-
 });
 
 module.exports = router;
