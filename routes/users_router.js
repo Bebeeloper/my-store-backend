@@ -10,18 +10,31 @@ router.get('/', async (req, res) => {
   res.json(users.slice(0, limit));
 });
 
-// Validate user login 'simulation'
-router.get('/:password/:email', async (req, res) => {
+// Validate user login
+router.post('/login', async (req, res) => {
   try {
-    const { password } = req.params;
-    const { email } = req.params;
-    const user = await userService.userLogIn(password, email);
+    const body = req.body;
+    const user = await userService.userLogIn(body);
     res.status(200).json(user);
   } catch (error) {
     res.status(404).json({
       ErrorMessage: error.message
     })
   }
+});
+
+// POST User
+router.post('/',  async (req, res) => {
+  try {
+    const body = req.body;
+    const user = await userService.postUser(body);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(404).json({
+      ErrorMessage: error.message
+    });
+  }
+
 });
 
 module.exports = router;
