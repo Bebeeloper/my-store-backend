@@ -37,4 +37,18 @@ router.post('/',  async (req, res) => {
 
 });
 
+// PATCH Password User
+router.patch('/password/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const body = req.body;
+    const user = await userService.patchUserPassword(userId, body);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(404).json({
+      ErrorMessage: error.message
+    })
+  }
+});
+
 module.exports = router;

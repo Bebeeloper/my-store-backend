@@ -1,4 +1,5 @@
 const pool = require('../libs/postgres.pool');
+const bcrypt = require('bcrypt');
 
 class UserServices {
 
@@ -55,6 +56,47 @@ class UserServices {
     }else{
       throw new Error('Debes poner un body en formato JSON');
     }
+  }
+
+  async patchUserPassword(userId, body){
+    const getDBUser = await this.getDBById(userId);
+    let userArray = getDBUser;
+    // console.log(getDBUser);
+    let userFind = userArray.find(user => user.id === parseInt(userId));
+
+    const fieldsToUpdate = {
+      ...userFind,
+      ...body
+    };
+    console.log(fieldsToUpdate);
+    const hashedPassword = await bcrypt.hash(fieldsToUpdate.password, 10);
+
+    if (getDBUser.length > 0) {
+      const query = 'UPDATE users SET password = ahorasi WHERE id = 6';
+      // const array = [hashedPassword, parseInt(userId)];
+      const responseDB = await this.pool.query(query);
+
+      console.log(responseDB.rows);
+
+      if (responseDB.rows.length > 0) {
+        return {
+          Message: 'User updated successfully',
+          data: fieldsToUpdate
+        };
+      }else{
+        throw new Error('We can not change user password, try again');
+      }
+    }else{
+      throw new Error('User: ' + userId + ' not found');
+    }
+
+  }
+
+  async getDBById(userId){
+    const query = 'SELECT id, email, password, role FROM users WHERE id = $1';
+    const array = [parseInt(userId)];
+    const responseDB = await this.pool.query(query, array);
+    return responseDB.rows;
   }
 
 }
