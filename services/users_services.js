@@ -21,11 +21,17 @@ class UserServices {
   // user login
   async userLogIn(body){
     if (Object.keys(body).length != 0) {
-      const query = 'SELECT * FROM users WHERE password = crypt($1, password) AND email = $2';
-      const array = [body.password, body.email];
+
+      const query = 'SELECT * FROM users WHERE email = $1';
+      const array = [body.email];
       const responseDB = await this.pool.query(query, array);
 
-      if (responseDB.rows.length > 0) {
+      const hashedPassword = await bcrypt.compare(
+        body.password,
+        responseDB.rows[0].password
+      );
+
+      if (hashedPassword) {
         return {
           message: 'User logged in successfully',
           data: responseDB.rows
@@ -40,8 +46,9 @@ class UserServices {
 
   async postUser(body){
     if (Object.keys(body).length != 0) {
-      const queryInsertUser = 'INSERT INTO users (email, password, role) VALUES ($1, crypt($2, gen_salt(\'bf\')), $3) RETURNING *';
-      const arrayInsertUser = [body.email, body.password, body.role];
+      const hashedPassword = await bcrypt.hash(body.password, 10);
+      const queryInsertUser = 'INSERT INTO users (email, password, role) VALUES ($1, $2, $3) RETURNING *';
+      const arrayInsertUser = [body.email, hashedPassword, body.role];
       const responseDB = await this.pool.query(queryInsertUser, arrayInsertUser);
 
       if (responseDB.rows.length > 0) {
@@ -72,9 +79,9 @@ class UserServices {
     const hashedPassword = await bcrypt.hash(fieldsToUpdate.password, 10);
 
     if (getDBUser.length > 0) {
-      const query = 'UPDATE users SET password = ahorasi WHERE id = 6';
-      // const array = [hashedPassword, parseInt(userId)];
-      const responseDB = await this.pool.query(query);
+      const query = 'UPDATE users SET password = $1 WHERE id = $2 AND email = $3 RETURNING *';
+      const array = [hashedPassword, parseInt(userId), body.email];
+      const responseDB = await this.pool.query(query, array);
 
       console.log(responseDB.rows);
 
